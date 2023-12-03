@@ -21,6 +21,8 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
 import { MemberCardComponent } from "./Components/member-card/member-card.component";
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { RouterModule } from '@angular/router';
+import { MemberEditComponent } from './Components/members/member-edit/member-edit.component';
+import { LoadingInterceptor } from './interceptors/loading.interceptor';
 
 @NgModule({
     declarations: [
@@ -34,6 +36,7 @@ import { RouterModule } from '@angular/router';
         TestErrorComponent,
         NotFoundComponent,
         ServerErrorComponent,
+        MemberEditComponent,
     ],
     providers: [
         {
@@ -45,6 +48,11 @@ import { RouterModule } from '@angular/router';
             provide: HTTP_INTERCEPTORS,
             useClass: JwtInterceptor,
             multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: LoadingInterceptor,
+            multi: true,
         }
     ],
     bootstrap: [AppComponent],
@@ -55,7 +63,7 @@ import { RouterModule } from '@angular/router';
         BrowserAnimationsModule,
         FormsModule,
         SharedModule,
-        MemberCardComponent
+        MemberCardComponent,
     ]
 })
 export class AppModule {}
