@@ -23,6 +23,7 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { RouterModule } from '@angular/router';
 import { MemberEditComponent } from './Components/members/member-edit/member-edit.component';
 import { LoadingInterceptor } from './interceptors/loading.interceptor';
+import { PhotoEditorComponent } from './Components/members/photo-editor/photo-editor.component';
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { LoadingInterceptor } from './interceptors/loading.interceptor';
         NotFoundComponent,
         ServerErrorComponent,
         MemberEditComponent,
+        PhotoEditorComponent,
     ],
     providers: [
         {
