@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavComponent } from './Components/nav/nav.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './Components/home/home.component';
 import { RegisterComponent } from './Components/register/register.component';
 import { MemberListComponent } from './Components/members/member-list/member-list.component';
@@ -24,6 +24,8 @@ import { RouterModule } from '@angular/router';
 import { MemberEditComponent } from './Components/members/member-edit/member-edit.component';
 import { LoadingInterceptor } from './interceptors/loading.interceptor';
 import { PhotoEditorComponent } from './Components/members/photo-editor/photo-editor.component';
+import { TextInputComponent } from './Components/forms/text-input/text-input.component';
+import { DatePickerComponent } from './Components/forms/date-picker/date-picker.component';
 
 @NgModule({
     declarations: [
@@ -39,6 +41,8 @@ import { PhotoEditorComponent } from './Components/members/photo-editor/photo-ed
         ServerErrorComponent,
         MemberEditComponent,
         PhotoEditorComponent,
+        TextInputComponent,
+        DatePickerComponent,
     ],
     providers: [
         {
@@ -65,6 +69,7 @@ import { PhotoEditorComponent } from './Components/members/photo-editor/photo-ed
         BrowserAnimationsModule,
         FormsModule,
         SharedModule,
+        ReactiveFormsModule,
         MemberCardComponent,
     ]
 })
