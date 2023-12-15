@@ -38,7 +38,7 @@
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        Welcome, {{user.username | titlecase}}
+        Welcome, {{user.knownAs}}
       </button>
       <ul *dropdownMenu class="dropdown-menu">
         <li><a class="dropdown-item" routerLink="/member/edit">Edit Profile</a></li>

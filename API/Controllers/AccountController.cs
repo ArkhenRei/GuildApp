@@ -16,7 +16,11 @@ public class AccountController : BaseApiController
     private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
 
-    public AccountController(DatingDbContext datingDbContext, ITokenService tokenService, IMapper mapper)
+    public AccountController(
+        DatingDbContext datingDbContext,
+        ITokenService tokenService,
+        IMapper mapper
+    )
     {
         _tokenService = tokenService;
         _mapper = mapper;
@@ -40,7 +44,13 @@ public class AccountController : BaseApiController
         _datingDbContext.Users.Add(user);
         await _datingDbContext.SaveChangesAsync();
 
-        return new UserDto { Username = user.UserName, Token = _tokenService.CreateToken(user), KnownAs = user.KnownAs };
+        return new UserDto
+        {
+            Username = user.UserName,
+            Token = _tokenService.CreateToken(user),
+            KnownAs = user.KnownAs,
+            Gender = user.Gender
+        };
     }
 
     [HttpPost("login")]
@@ -69,7 +79,8 @@ public class AccountController : BaseApiController
             Username = user.UserName,
             Token = _tokenService.CreateToken(user),
             PhotoUrl = user.photos.FirstOrDefault(x => x.IsMain)?.Url,
-            KnownAs = user.KnownAs
+            KnownAs = user.KnownAs,
+            Gender = user.Gender
         };
     }
 
