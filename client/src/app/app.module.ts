@@ -26,7 +26,6 @@ import { LoadingInterceptor } from './interceptors/loading.interceptor';
 import { PhotoEditorComponent } from './Components/members/photo-editor/photo-editor.component';
 import { TextInputComponent } from './Components/forms/text-input/text-input.component';
 import { DatePickerComponent } from './Components/forms/date-picker/date-picker.component';
-
 @NgModule({
     declarations: [
         AppComponent,
