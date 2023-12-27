@@ -9,6 +9,7 @@ import { RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/Models/member';
 import { MembersService } from 'src/app/Services/members.service';
+import { PresenceService } from 'src/app/Services/presence.service';
 
 @Component({
   selector: 'app-member-card',
@@ -21,13 +22,17 @@ import { MembersService } from 'src/app/Services/members.service';
 export class MemberCardComponent implements OnInit {
   @Input() member: Member | undefined;
 
-  constructor(private memberService: MembersService, private toastr: ToastrService) {}
+  constructor(
+    private memberService: MembersService,
+    private toastr: ToastrService,
+    public presenceService: PresenceService
+  ) {}
 
   ngOnInit(): void {}
 
-  addLike(member: Member){
+  addLike(member: Member) {
     this.memberService.addLike(member.userName).subscribe({
-      next: () => this.toastr.success('You have liked ' + member.knownAs)
-    })
+      next: () => this.toastr.success('You have liked ' + member.knownAs),
+    });
   }
 }

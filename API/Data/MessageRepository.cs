@@ -19,6 +19,11 @@ public class MessageRepository : IMessageRepository
         _mapper = mapper;
     }
 
+    public void AddGroup(Group group)
+    {
+        _datingDbContext.Groups.Add(group);
+    }
+
     public void AddMessage(Message message)
     {
         _datingDbContext.Messages.Add(message);
@@ -29,9 +34,21 @@ public class MessageRepository : IMessageRepository
         _datingDbContext.Messages.Remove(message);
     }
 
+    public async Task<Connection> GetConnection(string connectionId)
+    {
+        return await _datingDbContext.Connections.FindAsync(connectionId);
+    }
+
     public async Task<Message> GetMessage(int id)
     {
         return await _datingDbContext.Messages.FindAsync(id);
+    }
+
+    public async Task<Group> GetMessageGroup(string groupName)
+    {
+        return await _datingDbContext.Groups
+            .Include(x => x.Connections)
+            .FirstOrDefaultAsync(x => x.Name == groupName);
     }
 
     public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
@@ -105,6 +122,11 @@ public class MessageRepository : IMessageRepository
         }
 
         return _mapper.Map<IEnumerable<MessageDto>>(messages);
+    }
+
+    public void RemoveConnection(Connection connection)
+    {
+        _datingDbContext.Connections.Remove(connection);
     }
 
     public async Task<bool> SaveAllAsync()
