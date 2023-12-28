@@ -20,7 +20,7 @@ import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { MemberCardComponent } from "./Components/member-card/member-card.component";
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
-import { RouterModule } from '@angular/router';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { MemberEditComponent } from './Components/members/member-edit/member-edit.component';
 import { LoadingInterceptor } from './interceptors/loading.interceptor';
 import { PhotoEditorComponent } from './Components/members/photo-editor/photo-editor.component';
@@ -31,6 +31,7 @@ import { HasRoleDirective } from './directives/has-role.directive';
 import { UserManagementComponent } from './Components/admin/user-management/user-management.component';
 import { PhotoManagementComponent } from './Components/admin/photo-management/photo-management.component';
 import { RolesModalComponent } from './modals/roles-modal/roles-modal.component';
+import { CustomRouteReuseStrategy } from './Services/customRouteReuseStrategy';
 @NgModule({
     declarations: [
         AppComponent,
@@ -68,6 +69,10 @@ import { RolesModalComponent } from './modals/roles-modal/roles-modal.component'
             provide: HTTP_INTERCEPTORS,
             useClass: LoadingInterceptor,
             multi: true,
+        },
+        {
+            provide: RouteReuseStrategy,
+            useClass: CustomRouteReuseStrategy
         }
     ],
     bootstrap: [AppComponent],

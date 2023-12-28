@@ -14,16 +14,19 @@ public class MessageHub : Hub
     private readonly IMessageRepository _messageRepository;
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
+    private readonly IHubContext<PresenceHub> _presenceHub;
 
     public MessageHub(
         IMessageRepository messageRepository,
         IUserRepository userRepository,
-        IMapper mapper
+        IMapper mapper,
+        IHubContext<PresenceHub> presenceHub
     )
     {
         _messageRepository = messageRepository;
         _userRepository = userRepository;
         _mapper = mapper;
+        _presenceHub = presenceHub;
     }
 
     public override async Task OnConnectedAsync()
@@ -76,15 +79,32 @@ public class MessageHub : Hub
 
         var group = await _messageRepository.GetMessageGroup(groupName);
 
-        if(group.Connections.Any(x => x.Username == recipient.UserName)){
+        if (group.Connections.Any(x => x.Username == recipient.UserName))
+        {
             message.DateRead = DateTime.UtcNow;
+        }
+        else
+        {
+            var connections = await PresenceTracker.GetConnectionsForUser(recipient.UserName);
+            if (connections != null)
+            {
+                await _presenceHub
+                    .Clients
+                    .Clients(connections)
+                    .SendAsync(
+                        "NewMessageReceived",
+                        new { username = sender.UserName, knownAs = sender.KnownAs }
+                    );
+            }
         }
 
         _messageRepository.AddMessage(message);
 
         if (await _messageRepository.SaveAllAsync())
         {
-            await Clients.Group(groupName).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+            await Clients
+                .Group(groupName)
+                .SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
         }
     }
 
@@ -94,11 +114,13 @@ public class MessageHub : Hub
         return stringCompare ? $"{caller}-{other}" : $"{other}-{caller}";
     }
 
-    private async Task<bool> AddToGroup(string groupName){
+    private async Task<bool> AddToGroup(string groupName)
+    {
         var group = await _messageRepository.GetMessageGroup(groupName);
         var connection = new Connection(Context.ConnectionId, Context.User.GetUsername());
 
-        if(group == null) {
+        if (group == null)
+        {
             group = new Group(groupName);
             _messageRepository.AddGroup(group);
         }
@@ -107,7 +129,8 @@ public class MessageHub : Hub
         return await _messageRepository.SaveAllAsync();
     }
 
-    private async Task RemoveFromMessageGroup(){
+    private async Task RemoveFromMessageGroup()
+    {
         var connection = await _messageRepository.GetConnection(Context.ConnectionId);
         _messageRepository.RemoveConnection(connection);
         await _messageRepository.SaveAllAsync();
