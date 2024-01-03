@@ -71,11 +71,6 @@ public class UserRepository : IUserRepository
         return await _datingDbContext.Users.Include(p => p.photos).ToListAsync();
     }
 
-    public async Task<bool> SaveAllAsync()
-    {
-        return await _datingDbContext.SaveChangesAsync() > 0;
-    }
-
     public void Update(AppUser user)
     {
         _datingDbContext.Entry(user).State = EntityState.Modified;
