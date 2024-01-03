@@ -35,7 +35,7 @@ public class UserRepository : IUserRepository
         query = query.Where(u => u.UserName != userParams.CurrentUsername);
         query = query.Where(u => u.Gender == userParams.Gender);
 
-        var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge -1));
+        var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
         var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));
 
         query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
@@ -64,6 +64,15 @@ public class UserRepository : IUserRepository
             .Users
             .Include(p => p.photos)
             .SingleOrDefaultAsync(x => x.UserName == username);
+    }
+
+    public async Task<string> GetUserGender(string username)
+    {
+        return await _datingDbContext
+            .Users
+            .Where(x => x.UserName == username)
+            .Select(x => x.Gender)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<AppUser>> GetUsersAsync()
