@@ -24,6 +24,7 @@ public class DatingDbContext
     public DbSet<Message> Messages { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Connection> Connections { get; set; }
+    public DbSet<Photo> Photos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -70,5 +71,9 @@ public class DatingDbContext
             .HasOne(u => u.Sender)
             .WithMany(m => m.MessagesSent)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder
+            .Entity<Photo>()
+            .HasQueryFilter(p => p.IsApproved);
     }
 }

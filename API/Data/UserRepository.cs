@@ -19,13 +19,17 @@ public class UserRepository : IUserRepository
         _datingDbContext = datingDbContext;
     }
 
-    public async Task<MemberDto> GetMemberAsync(string username)
+    public async Task<MemberDto> GetMemberAsync(string username, bool isCurrentUser)
     {
-        return await _datingDbContext
+        var query = _datingDbContext
             .Users
             .Where(x => x.UserName == username)
             .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync();
+            .AsQueryable();
+
+        if(isCurrentUser) query = query.IgnoreQueryFilters();
+
+        return await query.FirstOrDefaultAsync();
     }
 
     public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
@@ -56,6 +60,15 @@ public class UserRepository : IUserRepository
     public async Task<AppUser> GetUserByIdAsync(int id)
     {
         return await _datingDbContext.Users.FindAsync(id);
+    }
+
+    public async Task<AppUser> GetUserByPhotoId(int photoId)
+    {
+        return await _datingDbContext.Users
+            .Include(p => p.photos)
+            .IgnoreQueryFilters()
+            .Where(p => p.photos.Any(p => p.Id == photoId))
+            .FirstOrDefaultAsync();
     }
 
     public async Task<AppUser> GetUserByUsernameAsync(string username)
