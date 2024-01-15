@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Member } from '../Models/member';
-import { map, of, take } from 'rxjs';
-import { PaginatedResult } from '../Models/pagination';
+import { Observable, catchError, map, of, take } from 'rxjs';
+import { PaginatedResult, Pagination } from '../Models/pagination';
 import { UserParams } from '../Models/userParams';
 import { AccountService } from './account.service';
 import { User } from '../Models/user';
@@ -49,20 +49,37 @@ export class MembersService {
     return;
   }
 
-  getMembers(userParams: UserParams) {
-    const response = this.memberCache.get(Object.values(userParams).join('-'));
+  getMembers(userParams?: any, shouldListAllUsers?: boolean) {
+    let params = new HttpParams();
 
-    if (response) return of(response);
+    if (shouldListAllUsers) {
+      params = params.set('all', 'true');
+    } else if (userParams?.gender) {
+      params = params.set('gender', userParams.gender);
+    }
 
-    let params = getPaginationHeaders(
-      userParams.pageNumber,
-      userParams.pageSize
-    );
+    if(userParams?.minAge || userParams?.minAge === 0){
+      params = params.append('minAge', userParams.minAge);
+    }
+    if(userParams?.maxAge || userParams?.maxAge === 0){
+      params = params.append('maxAge', userParams.maxAge);
+    }
+    if(userParams?.orderBy){
+      params = params.append('orderBy', userParams.orderBy);
+    } 
 
-    params = params.append('minAge', userParams.minAge);
-    params = params.append('maxAge', userParams.maxAge);
-    params = params.append('gender', userParams.gender);
-    params = params.append('orderBy', userParams.orderBy);
+    // Add other parameters as needed (minAge, maxAge, orderBy)
+
+    const userParamsValues = userParams ? Object.values(userParams) : [];
+    const cacheKey = shouldListAllUsers
+      ? 'all-members'
+      : `members-${userParamsValues.join('-')}`;
+    const response = this.memberCache.get(cacheKey);
+
+    if (response) {
+      // Respect user privacy by avoiding unnecessary re-fetching
+      return of(response);
+    }
 
     return getPaginatedResult<Member[]>(
       this.baseUrl + 'users',
@@ -70,8 +87,13 @@ export class MembersService {
       this.http
     ).pipe(
       map((response) => {
-        this.memberCache.set(Object.values(userParams).join('-'), response);
+        this.memberCache.set(cacheKey, response);
         return response;
+      }),
+      catchError((error) => {
+        // Handle errors gracefully, informing the user if appropriate
+        console.error('Error fetching members:', error);
+        return of([]); // Return an empty list to avoid UI crashes
       })
     );
   }

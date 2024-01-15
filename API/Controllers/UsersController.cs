@@ -27,15 +27,19 @@ public class UsersController : BaseApiController
 
     [HttpGet]
     public async Task<ActionResult<PagedList<MemberDto>>> GetUsers(
-        [FromQuery] UserParams userParams
+        [FromQuery] UserParams userParams,
+        [FromQuery] bool? all = false
     )
     {
-        var gender = await _uow.UserRepository.GetUserGender(User.GetUsername());
         userParams.CurrentUsername = User.GetUsername();
 
-        if (string.IsNullOrEmpty(userParams.Gender))
+        if (!all.GetValueOrDefault())
         {
-            userParams.Gender = gender == "male" ? "female" : "male";
+            if (string.IsNullOrEmpty(userParams.Gender))
+            {
+                var gender = await _uow.UserRepository.GetUserGender(User.GetUsername());
+                userParams.Gender = gender == "male" ? "female" : "male";
+            }
         }
 
         var users = await _uow.UserRepository.GetMembersAsync(userParams);
@@ -56,7 +60,10 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
         var currentUsername = User.GetUsername();
-        return await _uow.UserRepository.GetMemberAsync(username, isCurrentUser: currentUsername == username);
+        return await _uow.UserRepository.GetMemberAsync(
+            username,
+            isCurrentUser: currentUsername == username
+        );
     }
 
     [HttpPut]

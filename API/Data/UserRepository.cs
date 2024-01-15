@@ -37,7 +37,10 @@ public class UserRepository : IUserRepository
         var query = _datingDbContext.Users.AsQueryable();
 
         query = query.Where(u => u.UserName != userParams.CurrentUsername);
-        query = query.Where(u => u.Gender == userParams.Gender);
+
+        if(userParams.Gender != null){
+            query = query.Where(u => u.Gender == userParams.Gender);
+        }
 
         var minDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MaxAge - 1));
         var maxDob = DateOnly.FromDateTime(DateTime.Today.AddYears(-userParams.MinAge));

@@ -18,6 +18,7 @@ export class MemberListComponent implements OnInit {
   pagination: Pagination | undefined;
   userParams: UserParams | undefined;
   genderList = [
+    {value: 'all', display: 'All'},
     { value: 'male', display: 'Males' },
     { value: 'female', display: 'Females' },
   ];
@@ -32,15 +33,32 @@ export class MemberListComponent implements OnInit {
   }
 
   loadMembers() {
-    if (this.userParams) {
-      this.memberService.setUserParams(this.userParams);
-      this.memberService.getMembers(this.userParams).subscribe({
-        next: (response) => {
+    console.log(this.userParams);
+    if (this.userParams && this.userParams.gender === 'all') {
+      // Call getMembers with shouldListAllUsers set to true
+      this.memberService.getMembers(this.userParams, true).subscribe({
+        next: (response: any) => {
           if (response.result && response.pagination) {
             this.members = response.result;
             this.pagination = response.pagination;
           }
         },
+        error: (error) => {
+          // Handle errors gracefully
+        }
+      });
+    } else {
+      // Existing logic for applying filtering
+      this.memberService.getMembers(this.userParams).subscribe({
+        next: (response: any) => {
+          if (response.result && response.pagination) {
+            this.members = response.result;
+            this.pagination = response.pagination;
+          }
+        },
+        error: (error) => {
+          // Handle errors gracefully
+        }
       });
     }
   }

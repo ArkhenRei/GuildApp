@@ -19,7 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddApplicationService(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
-var connString = "";
+/* var connString = "";
 if (builder.Environment.IsDevelopment())
     connString = builder.Configuration.GetConnectionString("DefaultConnection");
 else
@@ -44,7 +44,7 @@ else
 builder.Services.AddDbContext<DatingDbContext>(opt =>
 {
     opt.UseNpgsql(connString);
-});
+}); */
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
