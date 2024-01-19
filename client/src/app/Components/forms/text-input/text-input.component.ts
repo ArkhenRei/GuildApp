@@ -1,5 +1,8 @@
 import { Component, Input, Self } from '@angular/core';
-import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, ControlValueAccessor, FormControl, NgControl, ValidationErrors } from '@angular/forms';
+import { Observable, catchError, map, of } from 'rxjs';
+import { AccountService } from 'src/app/Services/account.service';
+import { RegisterComponent } from '../../register/register.component';
 
 @Component({
   selector: 'app-text-input',

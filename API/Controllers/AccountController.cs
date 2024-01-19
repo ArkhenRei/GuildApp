@@ -84,4 +84,15 @@ public class AccountController : BaseApiController
     {
         return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
     }
+
+    [HttpGet("{username}")]
+    public async Task<IActionResult> CheckUsername(string username){
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == username.ToLower());
+        if(user != null){
+            return Ok(true); //username exists
+        }
+        else{
+            return Ok(); //username not found
+        }
+    }
 }

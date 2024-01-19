@@ -75,5 +75,6 @@ public class DatingDbContext
         modelBuilder
             .Entity<Photo>()
             .HasQueryFilter(p => p.IsApproved);
+
     }
 }

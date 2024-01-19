@@ -3,7 +3,7 @@
   <hr />
 
   <div class="mb-3">
-    <label style="margin-right: 10px">I am a: </label>
+    <label style="margin-right: 10px">Gender: </label>
     <label class="form-check-label">
       <input
         type="radio"
@@ -22,15 +22,25 @@
       />
       Female
     </label>
+    <label class="form-check-label">
+      <input
+        type="radio"
+        class="form-check-input ms-3"
+        value="other"
+        formControlName="Gender"
+      />
+      Other
+    </label>
   </div>
 
+  
   <app-text-input
     [formControl]="$any(registerForm.controls['username'])"
     [label]="'Username'"
   ></app-text-input>
   <app-text-input
     [formControl]="$any(registerForm.controls['knownAs'])"
-    [label]="'Known As'"
+    [label]="'Name'"
   ></app-text-input>
   <app-date-picker
     [formControl]="$any(registerForm.controls['dateOfBirth'])"

@@ -55,6 +55,7 @@ import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.c
         PhotoManagementComponent,
         RolesModalComponent,
         ConfirmDialogComponent,
+        
     ],
     providers: [
         {
@@ -87,6 +88,6 @@ import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.c
         SharedModule,
         ReactiveFormsModule,
         MemberCardComponent,
-    ]
+            ]
 })
 export class AppModule {}

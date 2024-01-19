@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { User } from '../Models/user';
 import { environment } from 'src/environments/environment';
 import { PresenceService } from './presence.service';
@@ -53,5 +53,11 @@ export class AccountService {
 
   getDecodedToken(token: string){
     return JSON.parse(atob(token.split('.')[1]))
+  }
+
+  checkUsername(username: string): Observable<boolean> {
+    // Replace with your backend URL for checking username
+    return this.http.get<User>(this.baseUrl + 'account/' + username)
+      .pipe(map(user => !!user)); // Return true if user exists, false otherwise
   }
 }
