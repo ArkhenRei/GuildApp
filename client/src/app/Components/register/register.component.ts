@@ -11,6 +11,7 @@ import {
 import { Router } from '@angular/router';
 import { Observable, catchError, map, of } from 'rxjs';
 import { AccountService } from 'src/app/Services/account.service';
+import { PasswordStrengthValidator } from 'src/app/Services/passwordStrengthValidator';
 
 @Component({
   selector: 'app-register',
@@ -44,7 +45,7 @@ export class RegisterComponent implements OnInit {
       country: ['', Validators.required],
       password: [
         '',
-        [Validators.required, Validators.minLength(4), Validators.maxLength(8)],
+        [Validators.required, PasswordStrengthValidator],
       ],
       confirmPassword: [
         '',
